@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ZenithShortener")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e676c48e3473c2253b672457bb4e9970a423689")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be5e2a6332fbbb7189b8933402714383c249be0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ZenithShortener")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ZenithShortener")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
