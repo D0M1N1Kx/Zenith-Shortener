@@ -12,4 +12,14 @@ public class UrlShortenerService
     {
         _db = db;
     }
+
+    private string GenerateRandomCode(int length)
+    {
+        var chars = new char[length];
+        
+        for (var i = 0; i < length; i++)
+            chars[i] = Alphabet[_random.Next(Alphabet.Length)];
+        
+        return new string(chars);
+    }
 }
