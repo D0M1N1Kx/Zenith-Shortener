@@ -2,6 +2,7 @@
 @using ZenithShortener.Services
 @inject UrlShortenerService ShortenerService
 @inject NavigationManager NavManager
+@inject IJSRuntime JSRuntime
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -46,8 +47,16 @@
                                     <small class="text-success d-block fw-bold text-uppercase tracking-wider" style="font-size: 0.75rem;">Shorted link is ready: </small>
                                     <a href="@resultUrl" target="_blank" class="fw-bold text-success-emphasis fs-4 text-decoration-none">@resultUrl</a>
                                 </div>
-                                <button class="btn btn-success fw-bold px-3 py-2 rounded-3" @onclick="CopyUrlToClipboard">
-                                    <i class="bi bi-clipboard-check me-1"></i> Copy
+                                <button class="btn @(isCopied ? "btn-outline-success" : "btn-success") fw-bold px-3 py-2 rounded-3 transition-all" 
+                                        @onclick="CopyUrlToClipboard">
+                                    @if (isCopied)
+                                    {
+                                        <i class="bi bi-check-circle-fill me-1"></i> <span>Copied!</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-clipboard-check me-1"></i> <span>Copy</span>
+                                    }
                                 </button>
                             </div>
                         </div>
@@ -63,6 +72,7 @@
     private string resultUrl = "";
     private string errorMessage = "";
     private bool isLoading = false;
+    private bool isCopied = false;
 
     private async Task HandleShorten()
     {
@@ -107,8 +117,17 @@
         }
     }
 
-    private void CopyUrlToClipboard()
+    private async Task CopyUrlToClipboard()
     {
-        // TODO: implement copy to clipboard
+        if (!string.IsNullOrWhiteSpace(resultUrl))
+        {
+            await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", resultUrl);
+            
+            isCopied = true;
+            
+            await Task.Delay(2000);
+            
+            isLoading = false;
+        }
     }
 }
