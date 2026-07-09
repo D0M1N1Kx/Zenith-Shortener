@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using ZenithShortener.Components;
+using ZenithShortener.Data;
 
 namespace ZenithShortener;
 
@@ -11,6 +13,9 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+        
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         var app = builder.Build();
 

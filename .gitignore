@@ -1,1 +1,8 @@
+obj/
+bin/
 .idea/
+*.db
+*.db-shm
+*.db-wal
+appsettings.Development.json
+*.sln.DotSettings.user
