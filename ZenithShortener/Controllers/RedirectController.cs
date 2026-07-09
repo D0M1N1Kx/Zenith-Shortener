@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ZenithShortener.Data;
 using ZenithShortener.Models;
+using ZenithShortener.Requests;
+using ZenithShortener.Services;
 
 namespace ZenithShortener.Controllers;
 
@@ -9,10 +11,12 @@ namespace ZenithShortener.Controllers;
 public class RedirectController : ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly UrlShortenerService _urlShortenerService;
     
-    public RedirectController(AppDbContext db)
+    public RedirectController(AppDbContext db, UrlShortenerService urlShortenerService)
     {
         _db = db;
+        _urlShortenerService = urlShortenerService;
     }
 
     [HttpGet("/{shortCode}")]
@@ -37,5 +41,13 @@ public class RedirectController : ControllerBase
         await _db.SaveChangesAsync();
         
         return Redirect(link.OriginalUrl);
+    }
+
+    [HttpPost("/api/short")]
+    public async Task<IActionResult> CreateShortUrl(CreateShortUrlRequest request)
+    {
+        var shortCode = await _urlShortenerService.ShortenUrl(request.Url, request.ExpireDays);
+        
+        return Ok(new { ShortCode = shortCode, ShortUrl = $"{Request.Scheme}://{Request.Host}/{shortCode}"});
     }
 }
