@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ZenithShortener.Components;
 using ZenithShortener.Data;
+using ZenithShortener.Services;
 
 namespace ZenithShortener;
 
@@ -16,6 +17,8 @@ public class Program
         
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services.AddScoped<UrlShortenerService>();
 
         var app = builder.Build();
 
