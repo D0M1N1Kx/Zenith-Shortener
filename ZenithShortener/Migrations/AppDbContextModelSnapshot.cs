@@ -19,9 +19,9 @@ namespace ZenithShortener.Migrations
 
             modelBuilder.Entity("ZenithShortener.Models.ClickAnalytics", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ClickedAt")
                         .HasColumnType("TEXT");

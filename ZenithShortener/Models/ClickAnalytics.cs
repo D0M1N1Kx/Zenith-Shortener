@@ -6,7 +6,7 @@ namespace ZenithShortener.Models;
 public class ClickAnalytics
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required]
     public Guid ShortenedLinkId { get; set; }

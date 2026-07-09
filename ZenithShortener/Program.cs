@@ -20,6 +20,8 @@ public class Program
 
         builder.Services.AddScoped<UrlShortenerService>();
 
+        builder.Services.AddControllers();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -38,6 +40,8 @@ public class Program
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+        
+        app.MapControllers();
 
         app.Run();
     }
