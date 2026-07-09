@@ -1,7 +1,114 @@
 ﻿@page "/"
+@using ZenithShortener.Services
+@inject UrlShortenerService ShortenerService
+@inject NavigationManager NavManager
 
-<PageTitle>Home</PageTitle>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow border-0 rounded-4 p-4 bg-white">
+                <div class="card-body text-center">
+                    <h1 class="card-title fw-black mb-2 text-primary display-5">Zenith Shortener</h1>
+                    <p class="text-muted mb-4 fs-5">Enter the very long URL, and we will shorten it for you.</p>
 
-<h1>Hello, world!</h1>
+                    <div class="input-group input-group-lg mb-3 shadow-sm rounded-3 overflow-hidden">
+                        <input type="text" 
+                               class="form-control border-1 border-secondary-subtle" 
+                               placeholder="https://very-long-webpage.hu/datas/parameter?id=123..." 
+                               @bind="longUrl" 
+                               @bind:event="oninput"
+                               @onkeydown="HandleKeyDown" />
+                        
+                        <button class="btn btn-primary px-4 fw-bold text-uppercase fs-6" 
+                                type="button" 
+                                @onclick="HandleShorten" 
+                                disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            Short
+                        </button>
+                    </div>
 
-Welcome to your new app.
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3 border-0 rounded-3" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> @errorMessage
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(resultUrl))
+                    {
+                        <div class="card mt-4 border-2 border-success bg-success-subtle rounded-3">
+                            <div class="card-body d-flex justify-content-between align-items-center py-3 px-4">
+                                <div class="text-start">
+                                    <small class="text-success d-block fw-bold text-uppercase tracking-wider" style="font-size: 0.75rem;">Shorted link is ready: </small>
+                                    <a href="@resultUrl" target="_blank" class="fw-bold text-success-emphasis fs-4 text-decoration-none">@resultUrl</a>
+                                </div>
+                                <button class="btn btn-success fw-bold px-3 py-2 rounded-3" @onclick="CopyUrlToClipboard">
+                                    <i class="bi bi-clipboard-check me-1"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string longUrl = "";
+    private string resultUrl = "";
+    private string errorMessage = "";
+    private bool isLoading = false;
+
+    private async Task HandleShorten()
+    {
+        if (string.IsNullOrWhiteSpace(longUrl))
+        {
+            errorMessage = "Whoops! You need to paste a link first.";
+            resultUrl = "";
+            return;
+        }
+        
+        if (!longUrl.StartsWith("http://") && !longUrl.StartsWith("https://"))
+        {
+            longUrl = "https://" + longUrl;
+        }
+
+        try
+        {
+            isLoading = true;
+            errorMessage = "";
+            resultUrl = "";
+            
+            var shortCode = await ShortenerService.ShortenUrl(longUrl);
+            
+            resultUrl = $"{NavManager.BaseUri}{shortCode}";
+            longUrl = "";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Something went wrong: " + ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await HandleShorten();
+        }
+    }
+
+    private void CopyUrlToClipboard()
+    {
+        // TODO: implement copy to clipboard
+    }
+}
